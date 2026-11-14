@@ -1,0 +1,27 @@
+# starship.toml - Dark Signal / Moody Snowscape Theme
+
+[directory]
+style = "bold #839294"
+format = "[$path]($style) "
+
+[git_branch]
+symbol = " "
+style = "dimmed #839294"
+format = "($symbol$branch) "
+
+[git_status]
+style = "bold #ff0000"
+modified = "[!]($style)"
+staged = "[+]($style)"
+ahead = "[⇡]($style)"
+diverged = "[⇕]($style)"
+format = '([$all_status$ahead_behind]($style) )'
+
+[character]
+success_symbol = "[❯](bold #ff0000)" # PAKSA MERAH SINYAL YADAH
+error_symbol = "[❯](bold #ff0000)"
+
+[cmd_duration]
+min_time = 2000
+style = "dimmed #839294"
+format = "[$duration]($style) "
