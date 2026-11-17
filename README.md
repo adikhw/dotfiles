@@ -1,49 +1,69 @@
-# arch-dotfiles
+# dotfiles — adikhw (Fedora)
 
-Kumpulan dotfile zsh yang sudah diadaptasi dari setup Arch Linux untuk dipakai di **WSL Ubuntu**.
+Konfigurasi shell untuk **bash, zsh, dan sh sekaligus**, dengan satu sumber PATH
+supaya `command not found` tidak muncul lagi karena shell yang berbeda.
+
+## Kenapa dulu rusak
+
+Login shell di mesin ini **zsh** (`/usr/bin/zsh`), tapi PATH `~/.npm-global/bin`
+( tempat `opencode` ) cuma ada di `~/.bashrc`. Selain itu Spotify dipasang sebagai
+**Flatpak**, jadi perintahnya `com.spotify.Client` — bukan `spotify` — dan folder
+`/var/lib/flatpak/exports/bin` juga tidak ada di PATH.
+
+Sekarang semua shell membaca file yang sama, jadi tidak bisa drift lagi.
 
 ## Isi
 
-- `.zshrc` — konfigurasi zsh: prompt starship, plugin autosuggestions & syntax-highlighting, warna "Dark Signal", dan PATH Android SDK (opsional).
-- `starship.toml` — tema starship "Dark Signal / Moody Snowscape", copy apa adanya dari Arch.
+| File | Fungsi |
+| --- | --- |
+| `shell/env.sh` | **Satu-satunya sumber PATH + alias portable.** Edit di sini. |
+| `.zshenv` | Dimuat **setiap** zsh (interaktif, script, `zsh -c`). |
+| `.zshrc` | Prompt, plugin, warna. Memuat `shell/env.sh`. |
+| `.bashrc` | Alias bash, prompt. Memuat `shell/env.sh`. |
+| `.bash_profile` | Login bash → memuat `.bashrc`. |
+| `.profile` | Login POSIX (`sh`/`dash`) → memuat `shell/env.sh`. |
+| `env.d/10-user-path.conf` | PATH sesi desktop/systemd (terminal & app dari GNOME). |
+| `doctor.sh` | `shell-doctor` — cek PATH, command, dan wiring config. |
+| `install.sh` | Membuat symlink ke `$HOME` (aman dijalankan berulang). |
+| `starship.toml` | Tema starship "Dark Signal". |
 
-## Cara pakai di WSL Ubuntu
+## Cara pakai
 
-1. Install paket yang dibutuhkan (lihat daftar di bawah).
-2. Copy file ke home:
-   ```bash
-   cp .zshrc ~/.zshrc
-   mkdir -p ~/.config
-   cp starship.toml ~/.config/starship.toml
-   ```
-3. Jadikan zsh shell default (opsional):
-   ```bash
-   chsh -s "$(command -v zsh)"
-   ```
-4. Buka terminal baru, lalu cek dengan `exec zsh`.
+Pasang / sinkronkan setelah clone, atau setiap kali menambah file baru:
 
-Semua sourcing dibungkus pengecekan, jadi kalau ada paket yang belum terinstall shell tetap jalan tanpa error. Plugin dicari berurutan di:
+```bash
+./install.sh
+exec zsh          # atau buka terminal baru
+shell-doctor      # semua harus "ok"
+```
 
-1. `/usr/share/zsh-syntax-highlighting/` dan `/usr/share/zsh-autosuggestions/` (paket Ubuntu)
-2. `~/.zsh-syntax-highlighting/` dan `~/.zsh-autosuggestions/`
-3. `~/.oh-my-zsh/custom/plugins/`
+`install.sh` memindahkan file lama ke `~/.dotfiles-backup-<timestamp>/`, lalu
+membuat symlink. Artinya `~/.zshrc` **adalah** `~/dotfiles/.zshrc` — edit salah
+satunya sama saja, dan `git status` langsung terlihat.
 
-`ANDROID_HOME` hanya di-set kalau folder `~/Android/Sdk` ada.
+Setelah mengubah PATH, logout/login sekali supaya sesi GNOME ikut memakai PATH
+baru (`env.d/10-user-path.conf` dibaca saat login).
+
+## Menambah tool baru
+
+Kalau binary-nya masuk ke salah satu folder ini, tidak perlu ngapa-ngapain:
+
+```
+~/.local/bin            ~/.cargo/bin
+~/.npm-global/bin       ~/go/bin
+/var/lib/flatpak/exports/bin  ~/.local/share/flatpak/exports/bin
+```
+
+Kalau folder baru (misal `~/.bun/bin`), tambahkan ke `_envsh_user_dirs` di
+`shell/env.sh`, jalankan `./install.sh`, lalu `shell-doctor`.
 
 ## Yang perlu diinstall
 
-- `zsh`
-- `starship`
-- `fastfetch` (opsional, bisa dihapus dari `.zshrc`)
-- `zsh-autosuggestions`
-- `zsh-syntax-highlighting`
-- **Nerd Font** di sisi Windows (misalnya JetBrainsMono Nerd Font) supaya ikon prompt tampil benar
-
-Contoh di Ubuntu/WSL:
+`zsh`, `starship`, `fastfetch`, `eza`, `bat`, `neovim`,
+`zsh-autosuggestions`, `zsh-syntax-highlighting`, `flatpak`, dan Nerd Font
+(JetBrainsMono Nerd Font) supaya ikon prompt tampil.
 
 ```bash
-sudo apt update
-sudo apt install zsh starship fastfetch zsh-autosuggestions zsh-syntax-highlighting
+sudo dnf install zsh starship fastfetch eza bat neovim \
+    zsh-autosuggestions zsh-syntax-highlighting flatpak
 ```
-
-Kalau `starship` atau `fastfetch` nggak ada di repo Ubuntu, install manual (misalnya lewat cargo atau installer resmi), lalu pastikan `~/.local/bin` ada di PATH — sudah ditambahkan otomatis oleh `.zshrc`.

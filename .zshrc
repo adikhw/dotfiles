@@ -1,5 +1,8 @@
+# ~/.zshrc  (canonical copy is in ~/dotfiles; ~/.zshrc is a symlink to it)
+
 # --- Setup Bawaan ---
-export PATH="$HOME/.local/bin:$PATH"
+# PATH + shared aliases live in ONE file, also used by bash and sh.
+. "$HOME/.config/shell/env.sh"
 
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
