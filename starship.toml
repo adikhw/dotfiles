@@ -1,27 +1,64 @@
-# starship.toml - Dark Signal / Moody Snowscape Theme
+# starship.toml — macOS Tahoe / graphite
+# Prompt satu baris, ikon Nerd Font, warna mengikuti palette terminal
+# "graphite-tahoe". Ikon folder sengaja diberi spasi karena glyph-nya
+# punya tinta lebih lebar dari cell (kalau tidak, menimpa nama folder).
+
+"$schema" = "https://starship.rs/config-schema.json"
+add_newline = false
+
+format = """[\uf07b ](fg:#8ab4f8)$directory$git_branch$git_status$python$nodejs$rust$golang$cmd_duration$character"""
 
 [directory]
-style = "bold #839294"
+style = "bold #c9d1d9"
 format = "[$path]($style) "
+truncation_length = 3
+truncate_to_repo = true
+repo_root_style = "bold #8ab4f8"
 
 [git_branch]
-symbol = " "
-style = "dimmed #839294"
-format = "($symbol$branch) "
+symbol = "\ue0a0 "
+style = "#8ab4f8"
+format = "on [$symbol$branch]($style) "
 
 [git_status]
-style = "bold #ff0000"
-modified = "[!]($style)"
-staged = "[+]($style)"
-ahead = "[⇡]($style)"
-diverged = "[⇕]($style)"
-format = '([$all_status$ahead_behind]($style) )'
+style = "#e0af68"
+format = "([$all_status$ahead_behind]($style) )"
+conflicted = "=${count}"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
 
-[character]
-success_symbol = "[❯](bold #ff0000)" # PAKSA MERAH SINYAL YADAH
-error_symbol = "[❯](bold #ff0000)"
+[python]
+symbol = "\ue73c "
+style = "bold #e0af68"
+format = "[$symbol($version )]($style)"
+
+[nodejs]
+symbol = "\ue718 "
+style = "bold #9ece6a"
+format = "[$symbol($version )]($style)"
+
+[rust]
+symbol = "\ue7a8 "
+style = "bold #f7768e"
+format = "[$symbol($version )]($style)"
+
+[golang]
+symbol = "\ue724 "
+style = "bold #7dcfff"
+format = "[$symbol($version )]($style)"
 
 [cmd_duration]
 min_time = 2000
-style = "dimmed #839294"
-format = "[$duration]($style) "
+style = "dimmed #7d8590"
+format = "took [$duration]($style) "
+
+[character]
+success_symbol = "[❯](bold #8ab4f8)"
+error_symbol = "[❯](bold #f7768e)"
+vimcmd_symbol = "[❮](bold #9ece6a)"
