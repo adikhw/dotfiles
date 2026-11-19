@@ -127,3 +127,6 @@ ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#7d8590'
 ZSH_HIGHLIGHT_STYLES[default]='fg=#c9d1d9'
 ZSH_HIGHLIGHT_STYLES[comment]='fg=#565f89,italic'
 ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#f7768e'
+
+# opencode
+export PATH=/home/adikhw/.opencode/bin:$PATH
