@@ -57,9 +57,9 @@ if command -v glib-compile-schemas >/dev/null 2>&1; then
 fi
 
 if command -v gsettings >/dev/null 2>&1; then
-    # 800 ms = deliberately slow, but not sluggish.
+    # 400 ms = upstream default; snappy magic-lamp motion.
     GSETTINGS_SCHEMA_DIR="$magic_src/schemas" \
-        gsettings set "$magic_schema" duration 800 2>/dev/null || true
+        gsettings set "$magic_schema" duration 400 2>/dev/null || true
 
     # Add to enabled-extensions without clobbering the existing list.
     enabled=$(gsettings get org.gnome.shell enabled-extensions 2>/dev/null || true)

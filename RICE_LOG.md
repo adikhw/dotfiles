@@ -367,8 +367,8 @@ bawaan GNOME.
 - **Patch lokal**: `MagicLampMapEffect` + hook sinyal `map` supaya window yang
   baru dibuka juga mengembang dari ikon dock (upstream cuma minimize/unminimize).
   Animasi default GNOME untuk window normal di-skip lewat `_shouldAnimateActor`.
-- **Durasi**: `800 ms` (`duration` di schema extension), jadi lambat tapi tidak
-  mengganggu. Ubah dengan `GSETTINGS_SCHEMA_DIR=.../schemas gsettings set ... duration 800`.
+- **Durasi**: `400 ms` (`duration` di schema extension, default upstream).
+  Ubah dengan `GSETTINGS_SCHEMA_DIR=.../schemas gsettings set ... duration 400`.
 - **Aktif setelah logout/login** (GNOME Shell meng-cache module extension di
   Wayland). Cek dengan:
   `gnome-extensions info compiz-alike-magic-lamp-effect@hermes83.github.com`

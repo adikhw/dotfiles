@@ -75,13 +75,13 @@ di folder extension) di-vendor ke repo, lalu dipatch lokal:
   dan mengembang balik).
 - **Open window**: patch `MagicLampMapEffect` — window baru ikut mengembang
   dari ikon dock, bukan fade/scale bawaan GNOME.
-- **Durasi**: `800 ms` (sengaja lambat). Ubah lewat:
+- **Durasi**: `400 ms` (default upstream). Ubah lewat:
 
 ```bash
 S=~/.local/share/gnome-shell/extensions/compiz-alike-magic-lamp-effect@hermes83.github.com/schemas
 GSETTINGS_SCHEMA_DIR=$S gsettings set \
   org.gnome.shell.extensions.com.github.hermes83.compiz-alike-magic-lamp-effect \
-  duration 800
+  duration 400
 ```
 
 `install.sh` menyymlink extension ke
