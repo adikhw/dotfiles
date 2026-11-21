@@ -41,6 +41,40 @@ link "$here/shell/env.sh"             "$HOME/.config/shell/env.sh"
 link "$here/env.d/10-user-path.conf"  "$HOME/.config/environment.d/10-user-path.conf"
 link "$here/doctor.sh"                "$HOME/.local/bin/shell-doctor"
 
+# --- GNOME magic lamp effect (open/minimize/unminimize) -------------------
+# Vendored upstream extension, patched locally so newly opened windows also
+# unfold from the dock icon. Settings schema lives next to extension.js.
+magic_uuid="compiz-alike-magic-lamp-effect@hermes83.github.com"
+magic_src="$here/gnome/extensions/$magic_uuid"
+magic_dest="$HOME/.local/share/gnome-shell/extensions/$magic_uuid"
+magic_schema="org.gnome.shell.extensions.com.github.hermes83.compiz-alike-magic-lamp-effect"
+
+link "$magic_src" "$magic_dest"
+
+if command -v glib-compile-schemas >/dev/null 2>&1; then
+    glib-compile-schemas "$magic_src/schemas" 2>/dev/null || \
+        printf 'warning: could not compile magic lamp schemas\n'
+fi
+
+if command -v gsettings >/dev/null 2>&1; then
+    # 800 ms = deliberately slow, but not sluggish.
+    GSETTINGS_SCHEMA_DIR="$magic_src/schemas" \
+        gsettings set "$magic_schema" duration 800 2>/dev/null || true
+
+    # Add to enabled-extensions without clobbering the existing list.
+    enabled=$(gsettings get org.gnome.shell enabled-extensions 2>/dev/null || true)
+    case "$enabled" in
+        *"$magic_uuid"*) ;;
+        '@as []'|'[]')
+            gsettings set org.gnome.shell enabled-extensions "['$magic_uuid']" 2>/dev/null || true
+            ;;
+        *)
+            gsettings set org.gnome.shell enabled-extensions \
+                "$(printf '%s' "$enabled" | sed "s/]$/, '$magic_uuid']/")" 2>/dev/null || true
+            ;;
+    esac
+fi
+
 chmod +x "$here/doctor.sh"
 
 # Keep the desktop-session PATH identical to the shell PATH, derived from

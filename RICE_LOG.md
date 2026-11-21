@@ -355,3 +355,22 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,max
 - **Restore ke kompromi lama** (kanan, hijau-kuning-merah):
   `gsettings set org.gnome.desktop.wm.preferences button-layout ':maximize,minimize,close'`
 - Log ini disalin ke `~/dotfiles/RICE_LOG.md` dan di-commit di repo dotfiles.
+
+## Addon 2026-11-21: Magic lamp effect (open apps)
+
+Window sekarang memakai animasi *magic lamp* ala Compiz, bukan fade/scale
+bawaan GNOME.
+
+- **Extension**: `compiz-alike-magic-lamp-effect@hermes83.github.com` v25
+  (upstream hermes83, GPLv3). Di-vendor ke
+  `~/dotfiles/gnome/extensions/` dan disymlink oleh `install.sh`.
+- **Patch lokal**: `MagicLampMapEffect` + hook sinyal `map` supaya window yang
+  baru dibuka juga mengembang dari ikon dock (upstream cuma minimize/unminimize).
+  Animasi default GNOME untuk window normal di-skip lewat `_shouldAnimateActor`.
+- **Durasi**: `800 ms` (`duration` di schema extension), jadi lambat tapi tidak
+  mengganggu. Ubah dengan `GSETTINGS_SCHEMA_DIR=.../schemas gsettings set ... duration 800`.
+- **Aktif setelah logout/login** (GNOME Shell meng-cache module extension di
+  Wayland). Cek dengan:
+  `gnome-extensions info compiz-alike-magic-lamp-effect@hermes83.github.com`
+- **Restore**: `gnome-extensions disable compiz-alike-magic-lamp-effect@hermes83.github.com`
+  lalu hapus symlink di `~/.local/share/gnome-shell/extensions/`.

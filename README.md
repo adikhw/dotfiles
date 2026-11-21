@@ -27,6 +27,7 @@ Sekarang semua shell membaca file yang sama, jadi tidak bisa drift lagi.
 | `install.sh` | Membuat symlink ke `$HOME` (aman dijalankan berulang). |
 | `starship.toml` | Prompt starship graphite (satu baris, ikon Nerd Font). |
 | `vscode/settings.json` | Tema VS Code "Graphite Tahoe" + font JetBrainsMono NF. |
+| `gnome/extensions/compiz-alike-magic-lamp-effect@hermes83.github.com/` | Efek *magic lamp* saat window dibuka, di-minimize, dan di-restore. |
 
 ## Cara pakai
 
@@ -64,6 +65,32 @@ Isinya:
 Tidak ada setting yang bergantung pada extension, kecuali
 `workbench.iconTheme: material-icon-theme` yang otomatis fallback ke ikon
 bawaan kalau extension-nya belum ada.
+
+## Magic lamp (window open/minimize)
+
+Extension GNOME Shell `compiz-alike-magic-lamp-effect` v25 (GPLv3, LICENSE ikut
+di folder extension) di-vendor ke repo, lalu dipatch lokal:
+
+- **Minimize / unminimize**: perilaku upstream (window "terhisap" ke ikon dock
+  dan mengembang balik).
+- **Open window**: patch `MagicLampMapEffect` — window baru ikut mengembang
+  dari ikon dock, bukan fade/scale bawaan GNOME.
+- **Durasi**: `800 ms` (sengaja lambat). Ubah lewat:
+
+```bash
+S=~/.local/share/gnome-shell/extensions/compiz-alike-magic-lamp-effect@hermes83.github.com/schemas
+GSETTINGS_SCHEMA_DIR=$S gsettings set \
+  org.gnome.shell.extensions.com.github.hermes83.compiz-alike-magic-lamp-effect \
+  duration 800
+```
+
+`install.sh` menyymlink extension ke
+`~/.local/share/gnome-shell/extensions/`, compile schema, set durasi, dan
+menambahkannya ke `enabled-extensions` tanpa menghapus extension lain.
+
+GNOME Shell meng-cache kode extension sampai sesi berakhir. Di Wayland
+**logout/login sekali** setelah install/update supaya patch open-window aktif
+(di X11 bisa `Alt+F2` lalu `r`).
 
 ## Menambah tool baru
 
